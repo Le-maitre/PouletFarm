@@ -1,7 +1,10 @@
 package com.example.pouletfarm.service;
 
 import com.example.pouletfarm.model.Entree;
+import com.example.pouletfarm.model.User;
 import com.example.pouletfarm.repository.EntreeRepository;
+import com.example.pouletfarm.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,45 +16,46 @@ public class EntreeService {
 
     @Autowired
     private EntreeRepository entreeRepository;
+     @Autowired
+    private UserRepository userRepository;
 
-    // Méthode pour créer une nouvelle entrée
-    public Entree createEntree(Entree entree) {
-        return entreeRepository.save(entree);
-    }
-
-    // Méthode pour récupérer toutes les entrées
-    public List<Entree> getAllEntrees() {
-        return entreeRepository.findAll();
-    }
-
-    // Méthode pour récupérer une entrée par son ID
-    public Entree getEntreeById(Long id) {
-        Optional<Entree> entree = entreeRepository.findById(id);
-        return entree.orElse(null);
-    }
-
-    // Méthode pour mettre à jour une entrée
-    public Entree updateEntree(Long id, Entree newEntree) {
-        Optional<Entree> optionalEntree = entreeRepository.findById(id);
-        if (optionalEntree.isPresent()) {
-            Entree entree = optionalEntree.get();
-            entree.setDateEntree(newEntree.getDateEntree());
-            entree.setNombrePoussins(newEntree.getNombrePoussins());
-            // Ajouter d'autres attributs à mettre à jour au besoin
+    public Entree createEntree(Entree entree, Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            entree.setUser(user);
             return entreeRepository.save(entree);
-        } else {
-            return null;
         }
+        return null; 
+    }
+    
+    
+    
+
+    public List<Entree> getAllEntrees(Long userId) {
+        return entreeRepository.findByUserId(userId);
     }
 
-    // Méthode pour supprimer une entrée
-    public boolean deleteEntree(Long id) {
-        Optional<Entree> optionalEntree = entreeRepository.findById(id);
-        if (optionalEntree.isPresent()) {
-            entreeRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public Entree getEntreeById(Long id, Long userId) {
+        return entreeRepository.findByIdAndUserId(id, userId).orElse(null);
+    }
+
+    public Entree updateEntree(Long id, Entree entree, Long userId) {
+        Optional<Entree> existingEntree = entreeRepository.findByIdAndUserId(id, userId);
+        if (existingEntree.isPresent()) {
+            Entree updatedEntree = existingEntree.get();
+            updatedEntree.setDateEntree(entree.getDateEntree());
+            updatedEntree.setNombrePoussins(entree.getNombrePoussins());
+            return entreeRepository.save(updatedEntree);
         }
+        return null;
+    }
+
+    public boolean deleteEntree(Long id, Long userId) {
+        Optional<Entree> existingEntree = entreeRepository.findByIdAndUserId(id, userId);
+        if (existingEntree.isPresent()) {
+            entreeRepository.delete(existingEntree.get());
+            return true;
+        }
+        return false;
     }
 }

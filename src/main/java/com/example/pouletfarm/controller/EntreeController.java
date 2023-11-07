@@ -10,30 +10,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/entree")
+@RequestMapping("/users/{userId}/entree")
 public class EntreeController {
 
     @Autowired
     private EntreeService entreeService;
 
-    // Endpoint pour créer une nouvelle entrée
     @PostMapping("/create")
-    public ResponseEntity<Entree> createEntree(@RequestBody Entree entree) {
-        Entree newEntree = entreeService.createEntree(entree);
+    public ResponseEntity<Entree> createEntree(@RequestBody Entree entree, @PathVariable Long userId) {
+        Entree newEntree = entreeService.createEntree(entree, userId);
         return new ResponseEntity<>(newEntree, HttpStatus.CREATED);
-    }
+    }    
 
-    // Endpoint pour récupérer toutes les entrées
     @GetMapping("/all")
-    public ResponseEntity<List<Entree>> getAllEntrees() {
-        List<Entree> entrees = entreeService.getAllEntrees();
+    public ResponseEntity<List<Entree>> getAllEntrees(@PathVariable Long userId) {
+        List<Entree> entrees = entreeService.getAllEntrees(userId);
         return new ResponseEntity<>(entrees, HttpStatus.OK);
     }
 
-    // Endpoint pour récupérer une entrée par son ID
     @GetMapping("/{id}")
-    public ResponseEntity<Entree> getEntreeById(@PathVariable Long id) {
-        Entree entree = entreeService.getEntreeById(id);
+    public ResponseEntity<Entree> getEntreeById(@PathVariable Long userId, @PathVariable Long id) {
+        Entree entree = entreeService.getEntreeById(id, userId);
         if (entree != null) {
             return new ResponseEntity<>(entree, HttpStatus.OK);
         } else {
@@ -41,10 +38,9 @@ public class EntreeController {
         }
     }
 
-    // Endpoint pour mettre à jour une entrée
     @PutMapping("/update/{id}")
-    public ResponseEntity<Entree> updateEntree(@PathVariable Long id, @RequestBody Entree entree) {
-        Entree updatedEntree = entreeService.updateEntree(id, entree);
+    public ResponseEntity<Entree> updateEntree(@PathVariable Long userId, @PathVariable Long id, @RequestBody Entree entree) {
+        Entree updatedEntree = entreeService.updateEntree(id, entree, userId);
         if (updatedEntree != null) {
             return new ResponseEntity<>(updatedEntree, HttpStatus.OK);
         } else {
@@ -52,10 +48,9 @@ public class EntreeController {
         }
     }
 
-    // Endpoint pour supprimer une entrée
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteEntree(@PathVariable Long id) {
-        boolean isDeleted = entreeService.deleteEntree(id);
+    public ResponseEntity<Void> deleteEntree(@PathVariable Long userId, @PathVariable Long id) {
+        boolean isDeleted = entreeService.deleteEntree(id, userId);
         return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

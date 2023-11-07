@@ -30,7 +30,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private List<Entree> entrees;
+    private List<Entree> entrees;    
 
     @OneToMany(mappedBy = "user")
     private List<Forum> forums;

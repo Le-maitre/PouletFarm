@@ -35,7 +35,7 @@ public class UserController {
     }
 
     // Ajouter un nouvel utilisateur
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
