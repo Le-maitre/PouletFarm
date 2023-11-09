@@ -1,61 +1,63 @@
 package com.example.pouletfarm.controller;
 
 import com.example.pouletfarm.model.BilanPrevision;
+import com.example.pouletfarm.model.Entree;
 import com.example.pouletfarm.service.BilanPrevisionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/bilanprevision")
+@RequestMapping("/api/bilanprevisions")
 public class BilanPrevisionController {
 
-    @Autowired
-    private BilanPrevisionService bilanPrevisionService;
+    private final BilanPrevisionService bilanPrevisionService;
 
-    // Endpoint pour créer un nouveau bilan prévisionnel
-    @PostMapping("/create")
-    public ResponseEntity<BilanPrevision> createBilanPrevision(@RequestBody BilanPrevision bilanPrevision) {
-        BilanPrevision newBilanPrevision = bilanPrevisionService.createBilanPrevision(bilanPrevision);
-        return new ResponseEntity<>(newBilanPrevision, HttpStatus.CREATED);
+    // Constructeur
+    public BilanPrevisionController(BilanPrevisionService bilanPrevisionService) {
+        this.bilanPrevisionService = bilanPrevisionService;
     }
 
-    // Endpoint pour récupérer tous les bilans prévisionnels
-    @GetMapping("/all")
-    public ResponseEntity<List<BilanPrevision>> getAllBilanPrevisions() {
-        List<BilanPrevision> bilanPrevisions = bilanPrevisionService.getAllBilanPrevisions();
-        return new ResponseEntity<>(bilanPrevisions, HttpStatus.OK);
+    // Récupérer tous les bilans prévisionnels associés à une entree spécifique
+    @GetMapping("/entree/{entreeId}")
+    public List<BilanPrevision> getBilanPrevisionsByEntree(@PathVariable Long entreeId) {
+        Entree entree = new Entree();
+        entree.setId(entreeId);
+        return bilanPrevisionService.getBilanPrevisionsByEntree(entree);
     }
 
-    // Endpoint pour récupérer un bilan prévisionnel par son ID
+    // Récupérer un bilan prévisionnel par son ID
     @GetMapping("/{id}")
     public ResponseEntity<BilanPrevision> getBilanPrevisionById(@PathVariable Long id) {
-        BilanPrevision bilanPrevision = bilanPrevisionService.getBilanPrevisionById(id);
-        if (bilanPrevision != null) {
-            return new ResponseEntity<>(bilanPrevision, HttpStatus.OK);
+        Optional<BilanPrevision> bilanPrevision = bilanPrevisionService.getBilanPrevisionById(id);
+        return bilanPrevision.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    // Créer un nouveau bilan prévisionnel
+    @PostMapping
+    public ResponseEntity<BilanPrevision> createBilanPrevision(@RequestBody BilanPrevision bilanPrevision) {
+        BilanPrevision createdBilanPrevision = bilanPrevisionService.createBilanPrevision(bilanPrevision);
+        return new ResponseEntity<>(createdBilanPrevision, HttpStatus.CREATED);
+    }
+
+    // Mettre à jour un bilan prévisionnel existant
+    @PutMapping("/{id}")
+    public ResponseEntity<BilanPrevision> updateBilanPrevision(@PathVariable Long id, @RequestBody BilanPrevision bilanPrevision) {
+        BilanPrevision updatedBilanPrevision = bilanPrevisionService.updateBilanPrevision(id, bilanPrevision);
+        if (updatedBilanPrevision != null) {
+            return new ResponseEntity<>(updatedBilanPrevision, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    // // Endpoint pour mettre à jour un bilan prévisionnel
-    // @PutMapping("/update/{id}")
-    // public ResponseEntity<BilanPrevision> updateBilanPrevision(@PathVariable Long id, @RequestBody BilanPrevision bilanPrevision) {
-    //     BilanPrevision updatedBilanPrevision = bilanPrevisionService.updateBilanPrevision(id, bilanPrevision);
-    //     if (updatedBilanPrevision != null) {
-    //         return new ResponseEntity<>(updatedBilanPrevision, HttpStatus.OK);
-    //     } else {
-    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //     }
-    // }
-
-    // Endpoint pour supprimer un bilan prévisionnel
-    @DeleteMapping("/delete/{id}")
+    // Supprimer un bilan prévisionnel par son ID
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBilanPrevision(@PathVariable Long id) {
-        boolean isDeleted = bilanPrevisionService.deleteBilanPrevision(id);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        bilanPrevisionService.deleteBilanPrevision(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

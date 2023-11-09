@@ -1,56 +1,53 @@
 package com.example.pouletfarm.service;
 
 import com.example.pouletfarm.model.BilanPrevision;
+import com.example.pouletfarm.model.Entree;
 import com.example.pouletfarm.repository.BilanPrevisionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
 @Service
 public class BilanPrevisionService {
 
-    @Autowired
-    private BilanPrevisionRepository bilanPrevisionRepository;
+    private final BilanPrevisionRepository bilanPrevisionRepository;
 
-    // Méthode pour créer un nouveau bilan prévisionnel
+    // Constructeur
+    public BilanPrevisionService(BilanPrevisionRepository bilanPrevisionRepository) {
+        this.bilanPrevisionRepository = bilanPrevisionRepository;
+    }
+
+    // Récupérer tous les bilans prévisionnels associés à une entree spécifique
+    public List<BilanPrevision> getBilanPrevisionsByEntree(Entree entree) {
+        return bilanPrevisionRepository.findByEntree(entree);
+    }
+
+    // Récupérer un bilan prévisionnel par son ID
+    public Optional<BilanPrevision> getBilanPrevisionById(Long id) {
+        return bilanPrevisionRepository.findById(id);
+    }
+
+    // Créer un nouveau bilan prévisionnel
     public BilanPrevision createBilanPrevision(BilanPrevision bilanPrevision) {
         return bilanPrevisionRepository.save(bilanPrevision);
     }
 
-    // Méthode pour récupérer tous les bilans prévisionnels
-    public List<BilanPrevision> getAllBilanPrevisions() {
-        return bilanPrevisionRepository.findAll();
-    }
-
-    // Méthode pour récupérer un bilan prévisionnel par son ID
-    public BilanPrevision getBilanPrevisionById(Long id) {
-        Optional<BilanPrevision> optionalBilanPrevision = bilanPrevisionRepository.findById(id);
-        return optionalBilanPrevision.orElse(null);
-    }
-
-    // // Méthode pour mettre à jour un bilan prévisionnel
-    // public BilanPrevision updateBilanPrevision(Long id, BilanPrevision newBilanPrevision) {
-    //     Optional<BilanPrevision> optionalBilanPrevision = bilanPrevisionRepository.findById(id);
-    //     if (optionalBilanPrevision.isPresent()) {
-    //         BilanPrevision oldBilanPrevision = optionalBilanPrevision.get();
-    //         oldBilanPrevision.setNom(newBilanPrevision.getNom());
-    //         oldBilanPrevision.setPrix(newBilanPrevision.getPrix());
-    //         return bilanPrevisionRepository.save(oldBilanPrevision);
-    //     } else {
-    //         return null; // Si le bilan prévisionnel n'existe pas, renvoie null
-    //     }
-    // }
-
-    // Méthode pour supprimer un bilan prévisionnel par son ID
-    public boolean deleteBilanPrevision(Long id) {
-        Optional<BilanPrevision> optionalBilanPrevision = bilanPrevisionRepository.findById(id);
-        if (optionalBilanPrevision.isPresent()) {
-            bilanPrevisionRepository.delete(optionalBilanPrevision.get());
-            return true; // Renvoie true si la suppression a réussi
+    // Mettre à jour un bilan prévisionnel existant
+    public BilanPrevision updateBilanPrevision(Long id, BilanPrevision bilanPrevision) {
+        Optional<BilanPrevision> existingBilanPrevision = bilanPrevisionRepository.findById(id);
+        if (existingBilanPrevision.isPresent()) {
+            BilanPrevision updatedBilanPrevision = existingBilanPrevision.get();
+            updatedBilanPrevision.setNom(bilanPrevision.getNom());
+            updatedBilanPrevision.setEntree(bilanPrevision.getEntree());
+            return bilanPrevisionRepository.save(updatedBilanPrevision);
         } else {
-            return false; // Renvoie false si le bilan prévisionnel n'a pas été trouvé
+            return null;
         }
+    }
+
+    // Supprimer un bilan prévisionnel par son ID
+    public void deleteBilanPrevision(Long id) {
+        bilanPrevisionRepository.deleteById(id);
     }
 }

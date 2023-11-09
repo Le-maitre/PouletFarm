@@ -28,9 +28,6 @@ public class TacheBilan {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "statut")
-    private boolean statut;
-
     @ManyToOne
     @JoinColumn(name = "bilan_id")
     private BilanPrevision bilanPrevision;
