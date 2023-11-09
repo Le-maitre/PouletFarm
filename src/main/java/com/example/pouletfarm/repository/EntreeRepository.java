@@ -1,17 +1,16 @@
 package com.example.pouletfarm.repository;
 
 import com.example.pouletfarm.model.Entree;
+import com.example.pouletfarm.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-@Repository
 public interface EntreeRepository extends JpaRepository<Entree, Long> {
+    List<Entree> findByUser(User user);
 
-    List<Entree> findByUserId(Long userId);
+    Optional<Entree> findByIdAndUser(Long id, User user);
 
-    Optional<Entree> findByIdAndUserId(Long id, Long userId);
+    void deleteByIdAndUser(Long id, User user);
 }

@@ -3,8 +3,6 @@ package com.example.pouletfarm.service;
 import com.example.pouletfarm.model.Entree;
 import com.example.pouletfarm.model.User;
 import com.example.pouletfarm.repository.EntreeRepository;
-import com.example.pouletfarm.repository.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,46 +14,40 @@ public class EntreeService {
 
     @Autowired
     private EntreeRepository entreeRepository;
-     @Autowired
-    private UserRepository userRepository;
 
-    public Entree createEntree(Entree entree, Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            entree.setUser(user);
-            return entreeRepository.save(entree);
-        }
-        return null; 
-    }
-    
-    
-    
-
-    public List<Entree> getAllEntrees(Long userId) {
-        return entreeRepository.findByUserId(userId);
+    // Récupérer toutes les entrées d'un utilisateur spécifique
+    public List<Entree> getAllEntreesForUser(User user) {
+        return entreeRepository.findByUser(user);
     }
 
-    public Entree getEntreeById(Long id, Long userId) {
-        return entreeRepository.findByIdAndUserId(id, userId).orElse(null);
+    // Récupérer une entrée par son ID (pour un utilisateur spécifique)
+    public Optional<Entree> getEntreeByIdForUser(Long id, User user) {
+        return entreeRepository.findByIdAndUser(id, user);
     }
 
-    public Entree updateEntree(Long id, Entree entree, Long userId) {
-        Optional<Entree> existingEntree = entreeRepository.findByIdAndUserId(id, userId);
+    // Créer une nouvelle entrée pour un utilisateur spécifique
+    public Entree createEntreeForUser(Entree entree, User user) {
+        entree.setUser(user);
+        return entreeRepository.save(entree);
+    }
+
+    // Mettre à jour une entrée existante (pour un utilisateur spécifique)
+    public Entree updateEntreeForUser(Long id, Entree entree, User user) {
+        Optional<Entree> existingEntree = entreeRepository.findByIdAndUser(id, user);
         if (existingEntree.isPresent()) {
             Entree updatedEntree = existingEntree.get();
+            updatedEntree.setNom(entree.getNom());
             updatedEntree.setDateEntree(entree.getDateEntree());
+            updatedEntree.setDateSortie(entree.getDateSortie());
             updatedEntree.setNombrePoussins(entree.getNombrePoussins());
             return entreeRepository.save(updatedEntree);
+        } else {
+            return null;
         }
-        return null;
     }
 
-    public boolean deleteEntree(Long id, Long userId) {
-        Optional<Entree> existingEntree = entreeRepository.findByIdAndUserId(id, userId);
-        if (existingEntree.isPresent()) {
-            entreeRepository.delete(existingEntree.get());
-            return true;
-        }
-        return false;
+    // Supprimer une entrée par son ID (pour un utilisateur spécifique)
+    public void deleteEntreeForUser(Long id, User user) {
+        entreeRepository.deleteByIdAndUser(id, user);
     }
 }

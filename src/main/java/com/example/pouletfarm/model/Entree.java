@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "entree")
 public class Entree {
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -31,6 +31,9 @@ public class Entree {
     @Column(name = "date_entree")
     private String dateEntree;
 
+    @Column(name = "date_sortie")
+    private String dateSortie;
+
     @Column(name = "nombre_poussins")
     private int nombrePoussins;
 
@@ -39,7 +42,6 @@ public class Entree {
     @JoinColumn(name = "user_id")
     private User user;
     
-
     @OneToMany(mappedBy = "entree")
     private List<Vaccination> vaccinations;
 
