@@ -1,6 +1,6 @@
 package com.example.pouletfarm.model;
 
-import java.sql.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +26,7 @@ public class BilanPrevision {
     private String nom;
 
 
-
+     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "entree_id")
     private Entree entree;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,24 +43,24 @@ public class Entree {
     @JoinColumn(name = "user_id")
     private User user;
     
-    @OneToMany(mappedBy = "entree")
+     @OneToMany(mappedBy = "entree", cascade = CascadeType.ALL)
     private List<Vaccination> vaccinations;
 
-    @OneToMany(mappedBy = "entree")
+    @OneToMany(mappedBy = "entree", cascade = CascadeType.ALL)
     private List<Nourriture> nourritures;
 
-    @OneToMany(mappedBy = "entree")
+     @OneToMany(mappedBy = "entree", cascade = CascadeType.ALL)
     private List<BilanPrevision> bilansPrevision;
 
-    @OneToMany(mappedBy = "entree")
+    @OneToMany(mappedBy = "entree", cascade = CascadeType.ALL)
     private List<Alerte> alertes;
 
-    @OneToMany(mappedBy = "entree")
+    @OneToMany(mappedBy = "entree", cascade = CascadeType.ALL)
     private List<Rapport> rapports;
 
-    @OneToMany(mappedBy = "entree")
+    @OneToMany(mappedBy = "entree", cascade = CascadeType.ALL)
     private List<PouletMort> pouletsMorts;
 
-    @OneToMany(mappedBy = "entree")
+    @OneToMany(mappedBy = "entree", cascade = CascadeType.ALL)
     private List<Vitamine> vitamines;
 }

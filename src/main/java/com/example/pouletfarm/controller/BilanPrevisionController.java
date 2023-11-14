@@ -36,9 +36,13 @@ public class BilanPrevisionController {
         return bilanPrevision.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Créer un nouveau bilan prévisionnel
-    @PostMapping
-    public ResponseEntity<BilanPrevision> createBilanPrevision(@RequestBody BilanPrevision bilanPrevision) {
+    // Créer un nouveau bilan prévisionnel associé à une entree
+    @PostMapping("/entree/{entreeId}")
+    public ResponseEntity<BilanPrevision> createBilanPrevision(@PathVariable Long entreeId, @RequestBody BilanPrevision bilanPrevision) {
+        Entree entree = new Entree();
+        entree.setId(entreeId);
+        bilanPrevision.setEntree(entree);
+
         BilanPrevision createdBilanPrevision = bilanPrevisionService.createBilanPrevision(bilanPrevision);
         return new ResponseEntity<>(createdBilanPrevision, HttpStatus.CREATED);
     }

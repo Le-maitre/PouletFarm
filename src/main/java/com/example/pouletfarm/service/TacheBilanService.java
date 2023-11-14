@@ -1,12 +1,12 @@
 package com.example.pouletfarm.service;
 
-import com.example.pouletfarm.model.TacheBilan;
-import com.example.pouletfarm.repository.TacheBilanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.pouletfarm.model.TacheBilan;
+import com.example.pouletfarm.repository.TacheBilanRepository;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TacheBilanService {
@@ -27,20 +27,28 @@ public class TacheBilanService {
     }
 
     public TacheBilan updateTacheBilan(Long id, TacheBilan tacheBilan) {
-        Optional<TacheBilan> existingTacheBilan = tacheBilanRepository.findById(id);
-        if (existingTacheBilan.isPresent()) {
-            tacheBilan.setId(id);
-            return tacheBilanRepository.save(tacheBilan);
+        TacheBilan existingTacheBilan = tacheBilanRepository.findById(id).orElse(null);
+
+        if (existingTacheBilan != null) {
+            existingTacheBilan.setNom(tacheBilan.getNom());
+            existingTacheBilan.setPrix(tacheBilan.getPrix());
+            existingTacheBilan.setDescription(tacheBilan.getDescription());
+            existingTacheBilan.setBilanPrevision(tacheBilan.getBilanPrevision());
+
+            return tacheBilanRepository.save(existingTacheBilan);
         }
+
         return null;
     }
 
     public boolean deleteTacheBilan(Long id) {
-        Optional<TacheBilan> existingTacheBilan = tacheBilanRepository.findById(id);
-        if (existingTacheBilan.isPresent()) {
+        if (tacheBilanRepository.existsById(id)) {
             tacheBilanRepository.deleteById(id);
             return true;
         }
         return false;
+    }
+    public List<TacheBilan> getTacheBilansByBilanPrevisionId(Long bilanPrevisionId) {
+        return tacheBilanRepository.findAllByBilanPrevisionId(bilanPrevisionId);
     }
 }
