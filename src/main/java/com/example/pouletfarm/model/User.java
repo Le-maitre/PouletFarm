@@ -2,6 +2,8 @@ package com.example.pouletfarm.model;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +14,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @NoArgsConstructor
 @Entity
