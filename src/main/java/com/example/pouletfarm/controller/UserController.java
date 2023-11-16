@@ -23,6 +23,23 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @PostMapping("/login")
+public ResponseEntity<User> loginUser(@RequestBody User loginUser) {
+    String email = loginUser.getEmail();
+    String password = loginUser.getPassword();
+
+    // Retrieve the user by email from the database
+    User user = userService.getUserByEmail(email);
+
+    if (user != null && user.getPassword().equals(password)) {
+        // If the user exists and passwords match, return the user details
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    } else {
+        // If credentials are invalid or user not found, return unauthorized status
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+}
+
     // Récupérer un utilisateur par son ID
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {

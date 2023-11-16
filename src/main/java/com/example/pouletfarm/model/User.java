@@ -2,7 +2,6 @@ package com.example.pouletfarm.model;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

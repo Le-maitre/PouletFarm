@@ -40,7 +40,18 @@ public class UserService {
 
         return userRepository.save(user);
     }
-
+    public User loginUser(String email, String password) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
+            return user.get();
+        }
+        return null; // Return null if user not found or credentials are incorrect
+    }
+    public User getUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.orElse(null);
+    }
+    
     // Mettre à jour un utilisateur existant
     public User updateUser(Long id, User user) {
         Optional<User> existingUser = userRepository.findById(id);
