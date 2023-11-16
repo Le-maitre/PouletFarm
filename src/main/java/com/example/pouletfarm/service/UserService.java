@@ -23,8 +23,21 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    // Créer un nouvel utilisateur
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public User createUser(User user) {
+        Optional<User> existingUserByUsername = userRepository.findByUsername(user.getUsernom());
+        Optional<User> existingUserByEmail = userRepository.findByEmail(user.getEmail());
+
+        if (existingUserByUsername.isPresent() || existingUserByEmail.isPresent()) {
+            throw new RuntimeException("Username or email already exists!");
+            // You can throw a different exception or handle it based on your application's requirements
+            // For example, returning a specific HTTP status code as ResponseEntity in Spring MVC
+        }
+
         return userRepository.save(user);
     }
 
