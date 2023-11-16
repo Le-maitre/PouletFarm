@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        Optional<User> existingUserByUsername = userRepository.findByUsername(user.getUsernom());
+        Optional<User> existingUserByUsername = userRepository.findByUsernom(user.getUsernom());
         Optional<User> existingUserByEmail = userRepository.findByEmail(user.getEmail());
 
         if (existingUserByUsername.isPresent() || existingUserByEmail.isPresent()) {
