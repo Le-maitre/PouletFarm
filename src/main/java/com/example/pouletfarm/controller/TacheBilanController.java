@@ -10,7 +10,7 @@ import com.example.pouletfarm.model.TacheBilan;
 import com.example.pouletfarm.service.TacheBilanService;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/tachebilans")
 public class TacheBilanController {

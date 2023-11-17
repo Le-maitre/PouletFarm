@@ -9,7 +9,7 @@ import com.example.pouletfarm.model.Nourriture;
 import com.example.pouletfarm.service.NourritureService;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/nourriture")
 public class NourritureController {
