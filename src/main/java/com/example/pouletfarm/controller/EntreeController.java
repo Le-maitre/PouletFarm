@@ -46,17 +46,11 @@ public class EntreeController {
     }
 
     // Mettre à jour une entrée existante pour un utilisateur spécifique
-    @PutMapping("/{userId}/entrees/{id}")
-    public ResponseEntity<Entree> updateEntreeForUser(@PathVariable Long userId, @PathVariable Long id, @RequestBody Entree entree) {
-        User user = new User();
-        user.setId(userId);
-        Entree updatedEntree = entreeService.updateEntreeForUser(id, entree, user);
-        if (updatedEntree != null) {
-            return new ResponseEntity<>(updatedEntree, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+   @PutMapping("/{userId}/entrees/{id}")
+   public ResponseEntity<Entree> updateEntryForUser(@PathVariable Long userId, @PathVariable Long id, @RequestBody Entree updatedEntry) {
+       Entree updatedEntree = entreeService.updateEntryForUser(id, updatedEntry, userId);
+       return new ResponseEntity<>(updatedEntree, HttpStatus.OK);
+   }
 
     // Supprimer une entrée par son ID pour un utilisateur spécifique
     @DeleteMapping("/{userId}/entrees/{id}")

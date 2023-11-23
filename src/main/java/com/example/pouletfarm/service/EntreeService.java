@@ -5,6 +5,8 @@ import com.example.pouletfarm.model.User;
 import com.example.pouletfarm.repository.EntreeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -32,21 +34,31 @@ public class EntreeService {
     }
 
     // Mettre à jour une entrée existante (pour un utilisateur spécifique)
-    public Entree updateEntreeForUser(Long id, Entree entree, User user) {
-        Optional<Entree> existingEntree = entreeRepository.findByIdAndUser(id, user);
-        if (existingEntree.isPresent()) {
-            Entree updatedEntree = existingEntree.get();
-            updatedEntree.setNom(entree.getNom());
-            updatedEntree.setDateEntree(entree.getDateEntree());
-            updatedEntree.setDateSortie(entree.getDateSortie());
-            updatedEntree.setNombrePoussins(entree.getNombrePoussins());
-            return entreeRepository.save(updatedEntree);
+    public Entree updateEntryForUser(Long entryId, Entree updatedEntry, Long userId) {
+        Optional<Entree> optionalEntry = entreeRepository.findById(entryId);
+
+        if (optionalEntry.isPresent()) {
+            Entree existingEntry = optionalEntry.get();
+
+            // Check if the entry belongs to the specified user
+            if (existingEntry.getUser().getId().equals(userId)) {
+                existingEntry.setNom(updatedEntry.getNom());
+                existingEntry.setNombrePoussins(updatedEntry.getNombrePoussins());
+                existingEntry.setDateEntree(updatedEntry.getDateEntree());
+                existingEntry.setDateSortie(updatedEntry.getDateSortie());
+                Entree savedEntry = entreeRepository.save(existingEntry);
+                return savedEntry;
+            } else {
+                // Entry does not belong to the specified user, handle the scenario
+                return null; // Or throw an exception
+            }
         } else {
-            return null;
+            // Entry with the provided ID not found
+            return null; // Or throw an exception
         }
     }
-
     // Supprimer une entrée par son ID (pour un utilisateur spécifique)
+    @Transactional
     public void deleteEntreeForUser(Long id, User user) {
         entreeRepository.deleteByIdAndUser(id, user);
     }

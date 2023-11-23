@@ -1,5 +1,5 @@
 package com.example.pouletfarm.controller;
 
-public class ParticiperForumController {
+public class CommentaireController {
     
 }
