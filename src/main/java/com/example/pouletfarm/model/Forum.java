@@ -1,15 +1,14 @@
 package com.example.pouletfarm.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,14 +21,24 @@ public class Forum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Lob // Utilisation de @Lob pour stocker des données binaires (comme une image)
-    @Column(columnDefinition = "BLOB")
-    private byte[] photo;
-
+    @Column(name = "description")
     private String description;
-    @JsonIgnore
+
+    @Column(name = "image")
+    private String imageUrl; // Lien URL de l'image
+    
+    // Relations avec d'autres entités
     @ManyToOne
-    @JoinColumn(name = "user_id") // Assurez-vous que le nom de la colonne correspond à votre base de données
     private User user;
+    
+    @OneToMany(mappedBy = "forum")
+    private List<Commentaire> commentaires;
+       
+    
+    @OneToMany(mappedBy = "forum")
+    private List<Like> likes;
+    
+    public Long getUserId() {
+        return this.user != null ? this.user.getId() : null;
+    }
 }

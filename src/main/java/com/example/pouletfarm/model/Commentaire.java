@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -24,11 +25,12 @@ public class Commentaire {
     private String contenu;
 
     // Relation avec l'utilisateur
-      @JsonIgnore
-    @ManyToOne
-    private User user;
-
-    // Relation avec le forum
-    @ManyToOne
+     @JsonIgnore
+   @ManyToOne
+    @JoinColumn(name = "forum_id", nullable = false)
     private Forum forum;
+     @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

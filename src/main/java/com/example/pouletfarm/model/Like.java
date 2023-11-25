@@ -21,18 +21,16 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    private boolean liked;
+    
+    // Relations avec d'autres entités
+    @JsonIgnore
+   @ManyToOne
+    @JoinColumn(name = "forum_id", nullable = false)
     private Forum forum;
-      @JsonIgnore
+
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user; 
-
-    public void setCreateur(User user) {
-        this.user = user;
-    }
-
-    public void setForum(Forum forum) {
-        this.forum = forum;
-    }
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

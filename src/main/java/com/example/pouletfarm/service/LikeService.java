@@ -1,44 +1,40 @@
 package com.example.pouletfarm.service;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.pouletfarm.model.Forum;
 import com.example.pouletfarm.model.Like;
-import com.example.pouletfarm.model.User;
 import com.example.pouletfarm.repository.LikeRepository;
-
 @Service
 public class LikeService {
+
     @Autowired
     private LikeRepository likeRepository;
 
-    public boolean userAimeForum(Long userId, Long forumId) {
-        return likeRepository.existsByUserIdAndForumId(userId, forumId);
+    // Méthode pour trouver un like par ID
+    public Optional<Like> getLikeById(Long likeId) {
+        return likeRepository.findById(likeId);
     }
 
-    public void aimerForum(Long userId, Long forumId) {
-        if (!userAimeForum(userId, forumId)) {
-            Like like = new Like();
-            User user = new User();
-            user.setId(userId);
-            Forum forum = new Forum();
-            forum.setId(forumId);
-    
-            like.setCreateur(user);
-            like.setForum(forum);
-    
-            likeRepository.save(like);
-        }
-    }
-    
-    public void unlikerForum(Long userId, Long forumId) {
-        Like like = likeRepository.findByUserIdAndForumId(userId, forumId);
-        if (like != null) {
-            likeRepository.delete(like);
-        }
+    // Méthode pour trouver tous les likes
+    public List<Like> getAllLikes() {
+        return likeRepository.findAll();
     }
 
-    public int nombreDeLikesPourForum(Long forumId) {
-        return likeRepository.countByForumId(forumId);
+    // Méthode pour enregistrer un nouveau like
+    public Like saveLike(Like like) {
+        return likeRepository.save(like);
     }
+
+    // Méthode pour mettre à jour les détails du like
+    public Like updateLike(Like like) {
+        return likeRepository.save(like);
+    }
+
+    // Méthode pour supprimer un like par ID
+    public void deleteLikeById(Long likeId) {
+        likeRepository.deleteById(likeId);
+    }
+    
+    // Autres méthodes personnalisées si nécessaires
 }
