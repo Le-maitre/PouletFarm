@@ -1,5 +1,7 @@
 package com.example.pouletfarm.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +30,7 @@ public class TacheBilan {
     @Column(name = "description")
     private String description;
 
+     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bilan_id")
     private BilanPrevision bilanPrevision;

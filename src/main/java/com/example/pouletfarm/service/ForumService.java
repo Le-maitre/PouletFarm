@@ -1,64 +1,76 @@
 package com.example.pouletfarm.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.pouletfarm.model.Forum;
 import com.example.pouletfarm.model.User;
 import com.example.pouletfarm.repository.ForumRepository;
-import com.example.pouletfarm.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ForumService {
 
-    @Autowired
-    private ForumRepository forumRepository;
+    private final ForumRepository forumRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    // Méthode pour trouver un forum par ID
-    public Optional<Forum> getForumById(Long forumId) {
-        return forumRepository.findById(forumId);
+    public ForumService(ForumRepository forumRepository) {
+        this.forumRepository = forumRepository;
     }
 
-    // Méthode pour trouver tous les forums
+    public Forum createForum(Forum forum, MultipartFile fichierAttache, Optional<User> userOptional) throws Exception {
+        if (forumRepository.findByDescription(forum.getDescription()) == null) {
+            if (fichierAttache != null) {
+                String location = "C:\\xampp\\htdocs\\pouletfarm";
+                Path rootLocation = Paths.get(location);
+    
+                try {
+                    if (!Files.exists(rootLocation)) {
+                        Files.createDirectories(rootLocation);
+                    }
+    
+                    String nomFichier = location + "\\" + fichierAttache.getOriginalFilename();
+                    Path filePath = Paths.get(nomFichier);
+    
+                    if (Files.exists(filePath)) {
+                        Files.delete(filePath);
+                    }
+    
+                    Files.copy(fichierAttache.getInputStream(), rootLocation.resolve(fichierAttache.getOriginalFilename()));
+                    forum.setImageUrl("http://localhost/pouletfarm/" + fichierAttache.getOriginalFilename());
+                } catch (Exception e) {
+                    throw new Exception("Une erreur s'est produite lors de la manipulation du fichier");
+                }
+            }
+    
+            User user = userOptional.orElseThrow(() -> new IllegalArgumentException("L'utilisateur est obligatoire pour créer un forum"));
+            forum.setUser(user); // Associer l'utilisateur à la publication du forum
+    
+            return forumRepository.save(forum);
+        } else {
+            throw new IllegalArgumentException("Le forum existe déjà");
+        }
+    }
+    
+
+    public Forum getForumById(Long id) {
+        return forumRepository.findById(id).orElse(null);
+    }
+
     public List<Forum> getAllForums() {
         return forumRepository.findAll();
     }
 
-    // Méthode pour enregistrer un nouveau forum
-    public Forum createForum(Long userId, Forum newForum) {
-        // Récupérer l'utilisateur à partir de l'ID
-        Optional<User> userOptional = userRepository.findById(userId);
-        
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            
-            // Associer le forum à l'utilisateur
-            newForum.setUser(user);
-              // Sauvegarder le forum
-              return forumRepository.save(newForum);
-            } else {
-                // Gérer le cas où l'utilisateur n'est pas trouvé
-                // Peut-être lancer une exception ou retourner null selon la logique de votre application
-                return null;
-            }
-        }
-
-    // Méthode pour mettre à jour les détails du forum
     public Forum updateForum(Forum forum) {
         return forumRepository.save(forum);
     }
 
-    // Méthode pour supprimer un forum par ID
-    public void deleteForumById(Long forumId) {
-        forumRepository.deleteById(forumId);
+    public void deleteForum(Long id) {
+        forumRepository.deleteById(id);
     }
-    
-    // Autres méthodes personnalisées si nécessaires
 }
-

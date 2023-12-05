@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/vaccinations")
-public class VaccinationController {
+@RequestMapping("api/vaccinations")
+public class VaccinationController {    
 
     @Autowired
     private VaccinationService vaccinationService;
@@ -22,7 +22,17 @@ public class VaccinationController {
         List<Vaccination> vaccinations = vaccinationService.getAllVaccinations();
         return new ResponseEntity<>(vaccinations, HttpStatus.OK);
     }
-
+     // Récupérer toutes les vaccinations pour une entrée précise
+     @GetMapping("/entry/{entryId}/vaccinations")
+     public ResponseEntity<List<Vaccination>> getVaccinationsForEntry(@PathVariable Long entryId) {
+         List<Vaccination> vaccinationsForEntry = vaccinationService.getVaccinationsForEntry(entryId);
+         
+         if (!vaccinationsForEntry.isEmpty()) {
+             return new ResponseEntity<>(vaccinationsForEntry, HttpStatus.OK);
+         } else {
+             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+         }
+     }
     // Récupérer une vaccination par son ID
     @GetMapping("/{id}")
     public ResponseEntity<Vaccination> getVaccinationById(@PathVariable Long id) {
@@ -35,10 +45,22 @@ public class VaccinationController {
     }
 
     // Ajouter une nouvelle vaccination
-    @PostMapping
-    public ResponseEntity<Vaccination> saveVaccination(@RequestBody Vaccination vaccination) {
-        Vaccination savedVaccination = vaccinationService.saveVaccination(vaccination);
-        return new ResponseEntity<>(savedVaccination, HttpStatus.CREATED);
+    // Ajouter une nouvelle vaccination pour une entrée spécifique
+    @PostMapping("/entry/{entryId}")
+    public ResponseEntity<Vaccination> saveVaccinationForEntry(
+            @RequestBody Vaccination vaccination,
+            @PathVariable Long entryId) {
+
+        // Vérifier si l'entrée avec entryId existe avant d'associer la vaccination
+        // Vous pouvez implémenter la logique de vérification ici
+
+        Vaccination savedVaccination = vaccinationService.saveVaccinationForEntry(vaccination, entryId);
+        
+        if (savedVaccination != null) {
+            return new ResponseEntity<>(savedVaccination, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     // Supprimer une vaccination par son ID

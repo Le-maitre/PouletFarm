@@ -29,6 +29,7 @@ public class Commentaire {
    @ManyToOne
     @JoinColumn(name = "forum_id", nullable = false)
     private Forum forum;
+    
      @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

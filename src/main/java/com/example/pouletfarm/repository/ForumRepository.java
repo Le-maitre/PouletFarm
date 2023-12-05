@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.example.pouletfarm.model.Forum;
 @Repository
 public interface ForumRepository extends JpaRepository<Forum, Long>  {
-    
+    Forum findByDescription(String description);
 }

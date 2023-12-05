@@ -1,5 +1,7 @@
 package com.example.pouletfarm.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +27,8 @@ public class Vitamine {
 
     @Column(name = "quantite")
     private double quantite;
-
+    
+     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "entree_id")
     private Entree entree;

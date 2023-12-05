@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface EntreeRepository extends JpaRepository<Entree, Long> {
     List<Entree> findByUser(User user);
-
+    Optional<Entree> findById(Long id);
     Optional<Entree> findByIdAndUser(Long id, User user);
     Optional<Entree> findByIdAndUserId(Long entryId, Long userId);
     void deleteByIdAndUser(Long id, User user);

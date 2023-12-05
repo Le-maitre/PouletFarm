@@ -6,35 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/pouletmort")
+@RequestMapping("api/pouletmort")
 public class PouletMortController {
 
     @Autowired
     private PouletMortService pouletMortService;
 
-    // Récupérer tous les enregistrements de poulets morts
-    @GetMapping("/all")
-    public List<PouletMort> getAllPouletMorts() {
-        return pouletMortService.getAllPouletsMorts();
+    // Ajouter un nouvel enregistrement de poulet mort pour une entrée spécifique
+    @PostMapping("/entree/{id}/add")
+    public PouletMort addPouletMortForEntree(@PathVariable Long id, @RequestBody PouletMort pouletMort) {
+        return pouletMortService.savePouletMortForEntree(id, pouletMort);
     }
 
-    // Récupérer un enregistrement de poulet mort par son ID
-    @GetMapping("/{id}")
-    public PouletMort getPouletMortById(@PathVariable Long id) {
-        return pouletMortService.getPouletMortById(id).orElse(null);
+    // Supprimer un enregistrement de poulet mort par son ID pour une entrée spécifique
+    @DeleteMapping("/entree/{entreeId}/delete/{id}")
+    public void deletePouletMortForEntree(@PathVariable Long entreeId, @PathVariable Long id) {
+        pouletMortService.deletePouletMortForEntree(entreeId, id);
     }
-
-    // Ajouter un nouvel enregistrement de poulet mort
-    @PostMapping("/add")
-    public PouletMort addPouletMort(@RequestBody PouletMort pouletMort) {
-        return pouletMortService.savePouletMort(pouletMort);
-    }
-
-    // Supprimer un enregistrement de poulet mort par son ID
-    @DeleteMapping("/delete/{id}")
-    public void deletePouletMort(@PathVariable Long id) {
-        pouletMortService.deletePouletMort(id);
+    
+    // Récupérer les enregistrements de poulets morts pour une entrée spécifique
+    @GetMapping("/entree/{id}")
+    public List<PouletMort> getPouletMortsByEntreeId(@PathVariable Long id) {
+        return pouletMortService.getPouletMortsByEntreeId(id);
     }
 }

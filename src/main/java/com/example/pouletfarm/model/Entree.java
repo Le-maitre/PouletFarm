@@ -1,5 +1,6 @@
 package com.example.pouletfarm.model;
 
+import java.sql.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,14 +32,15 @@ public class Entree {
     private String nom;
 
     @Column(name = "date_entree")
-    private String dateEntree;
+    private Date dateEntree;
 
     @Column(name = "date_sortie")
-    private String dateSortie;
+    private Date dateSortie;
 
     @Column(name = "nombre_poussins")
     private int nombrePoussins;
     @ManyToOne(fetch = FetchType.LAZY)
+    
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
