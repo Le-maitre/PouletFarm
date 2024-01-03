@@ -25,6 +25,11 @@ public class BilanPrevision {
     @Column(name = "nom_bilan")
     private String nom;
 
+    @Column(name = "prix")
+    private double prix;
+
+    @Column(name = "description")
+    private String description;
 
      @JsonIgnore
     @ManyToOne
