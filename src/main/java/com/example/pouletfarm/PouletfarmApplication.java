@@ -15,7 +15,5 @@ public class PouletfarmApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PouletfarmApplication.class, args);
 	}
-
-}
-
-
+				
+} 
